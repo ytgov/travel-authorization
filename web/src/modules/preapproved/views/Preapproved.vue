@@ -64,8 +64,9 @@
 
 <script>
 import http from "@/api/http-client"
-import { PREAPPROVED_URL, LOOKUP_URL, PROFILE_URL } from "@/urls"
+import { PREAPPROVED_URL, LOOKUP_URL } from "@/urls"
 
+import usersApi from "@/api/users-api"
 import travelPurposesApi from "@/api/travel-purposes-api"
 import travelAuthorizationPreApprovalsApi, {
   STATUSES,
@@ -91,7 +92,7 @@ export default {
   },
   async mounted() {
     this.loadingData = true
-    // await this.getUserAuth()
+    await this.getUserAuth()
     await this.getEmployees()
     await this.getDepartmentBranch()
     await this.getTravelPurposes()
@@ -110,13 +111,13 @@ export default {
     },
 
     async getUserAuth() {
-      return http
-        .get(`${PROFILE_URL}`)
-        .then((resp) => {
-          this.$store.commit("auth/setUser", resp.data.user)
+      return usersApi
+        .me()
+        .then(({ user }) => {
+          this.$store.commit("auth/setUser", user)
         })
-        .catch((e) => {
-          console.log(e)
+        .catch((error) => {
+          console.error(error)
         })
     },
 

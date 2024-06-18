@@ -9,7 +9,7 @@ import logger from "@/utils/logger"
 import { User } from "@/models"
 
 if (NODE_ENV !== "test") {
-  logger.info("AUTH0_DOMAIN", `${AUTH0_DOMAIN}/.well-known/jwks.json`)
+  logger.info(`AUTH0_DOMAIN=${AUTH0_DOMAIN}/.well-known/jwks.json`)
 }
 
 export type AuthorizationRequest = JwtRequest & {

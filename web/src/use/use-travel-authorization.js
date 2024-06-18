@@ -3,6 +3,8 @@ import { computed, reactive, toRefs, unref, watch } from "vue"
 import { TYPES as EXPENSE_TYPES } from "@/api/expenses-api"
 import travelAuthorizationsApi, { STATUSES } from "@/api/travel-authorizations-api"
 
+export { STATUSES }
+
 /**
  * TODO: add other fields
  * @typedef {Object} TravelAuthorization
@@ -51,6 +53,7 @@ export function useTravelAuthorization(travelAuthorizationId) {
       travelSegments: [],
       user: {},
     },
+    policy: null,
     isLoading: false,
     isErrored: false,
   })
@@ -58,10 +61,11 @@ export function useTravelAuthorization(travelAuthorizationId) {
   async function fetch(params = {}) {
     state.isLoading = true
     try {
-      const { travelAuthorization } = await travelAuthorizationsApi.get(
+      const { travelAuthorization, policy } = await travelAuthorizationsApi.get(
         unref(travelAuthorizationId),
         params
       )
+      state.policy = policy
       state.isErrored = false
       state.travelAuthorization = travelAuthorization
       return travelAuthorization

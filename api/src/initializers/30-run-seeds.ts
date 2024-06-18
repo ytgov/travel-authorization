@@ -17,7 +17,7 @@ async function runSeeds(): Promise<void> {
       logger.info("All seeds completed successfully.")
     })
     .catch((error) => {
-      logger.error("Error running seeds:", error)
+      logger.error(`Error running seeds: ${error}`, { error })
       throw error
     })
 }

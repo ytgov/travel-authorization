@@ -346,7 +346,7 @@ formRouter.delete("/:formId", ReturnValidationErrors, async function (req: Reque
         status: TravelAuthorization.Statuses.DELETED,
       })
       .then(async () => {
-        logger.info("Delete successful", req.params.id)
+        logger.info(`Delete successful ${req.params.id}`)
         await auditService.log(user.id, form.id, "Delete", "Deteled form")
         res.status(200).json("Delete successful")
       })

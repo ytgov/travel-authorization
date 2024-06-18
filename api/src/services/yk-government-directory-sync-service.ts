@@ -37,7 +37,9 @@ export class YkGovernmentDirectorySyncService extends BaseService {
         lastSyncFailureAt: null,
       })
     } catch (error) {
-      logger.error(`User sync failure for ${email} with yukon government directory`, error)
+      logger.error(`User sync failure for ${email} with yukon government directory: ${error}`, {
+        error,
+      })
       return this.user.update({
         lastSyncFailureAt: new Date(),
       })

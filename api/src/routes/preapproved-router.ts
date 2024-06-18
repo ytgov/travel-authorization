@@ -16,13 +16,13 @@ export const preapprovedRouter = express.Router()
 
 preapprovedRouter.get("/submissions", RequiresAuth, async function (req: Request, res: Response) {
   const applyScope = (scope: ModelStatic<TravelAuthorizationPreApprovalSubmission>, user: User) => {
-    if (req?.user?.roles?.indexOf(User.Roles.ADMIN) >= 0) {
+    if (user.roles?.indexOf(User.Roles.ADMIN) >= 0) {
       return scope
     }
 
     return scope.scope({
       where: {
-        department: req.user.department,
+        department: user.department,
       },
     })
   }
@@ -31,7 +31,7 @@ preapprovedRouter.get("/submissions", RequiresAuth, async function (req: Request
   const submissionList = await scopedSubmissions.findAll({
     include: [
       {
-        association: "preApproval",
+        association: "preApprovals",
         include: ["profiles"],
       },
     ],

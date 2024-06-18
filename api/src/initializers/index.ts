@@ -19,7 +19,7 @@ export async function importAndExecuteInitializers() {
     const { default: initializerAction } = await import(modulePath)
 
     return initializerAction().catch((error: unknown) => {
-      logger.error(`Initialization error in ${modulePath}:`, error)
+      logger.error(`Initialization error in ${modulePath}: ${error}`, { error })
       return Promise.reject(error)
     })
   }, Promise.resolve())

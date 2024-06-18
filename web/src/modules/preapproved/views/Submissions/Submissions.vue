@@ -11,7 +11,9 @@
         <!-- eslint-disable-next-line vue/no-parsing-error -->
         {{ item.submissionDate | beautifyDate }}
       </template>
-      <template #item.location="{ item }"> {{ item.preApproval?.location }} </template>
+      <template #item.location="{ item }">
+        {{ item.preApprovals.map((p) => p.location).join(" - ") }}
+      </template>
       <template #item.edit="{ item }">
         <v-row>
           <div style="width: 4.5rem">
@@ -21,14 +23,14 @@
               :edit-button="true"
               button-name="Edit"
               :travel-requests="travelRequests"
-              :selected-requests="[item.preApproval]"
+              :selected-requests="item.preApprovals"
               @updateTable="updateTable"
             />
           </div>
           <div style="width: 6.75rem">
             <ApproveTravel
               v-if="item.status === STATUSES.SUBMITTED && admin"
-              :travel-requests="[item.preApproval]"
+              :travel-requests="item.preApprovals"
               :submission-id="item.preTSubID"
               @updateTable="updateTable"
             />
@@ -37,7 +39,7 @@
             <PrintReport
               v-if="admin"
               :id="item.preTSubID"
-              :travel-requests="[item.preApproval]"
+              :travel-requests="item.preApprovals"
               :button-inside-table="true"
               button-name="Print"
             />

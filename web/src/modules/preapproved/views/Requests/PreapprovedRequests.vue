@@ -100,11 +100,13 @@
 </template>
 
 <script>
-import Vue from "vue"
+import Vue, { ref } from "vue"
 import { ExportToCsv } from "export-to-csv"
 import { isNil } from "lodash"
+import { DateTime } from "luxon"
 
 import { STATUSES } from "@/api/travel-authorization-pre-approvals-api"
+import useCurrentUser from "@/use/use-current-user"
 
 import NewTravelRequest from "./NewTravelRequest.vue"
 import PrintReport from "../Common/PrintReport.vue"
@@ -123,9 +125,11 @@ export default {
       default: () => [],
     },
   },
-  data() {
+  setup() {
+    const { isAdmin } = useCurrentUser()
+
     return {
-      headers: [
+      headers: ref([
         {
           text: "Name",
           value: "name",
@@ -174,10 +178,10 @@ export default {
           sortable: false,
           width: "1rem",
         },
-      ],
-      admin: false,
-      selectedRequests: [],
-      firstSelectionDept: "",
+      ]),
+      admin: isAdmin,
+      selectedRequests: ref([]),
+      firstSelectionDept: ref(""),
     }
   },
   computed: {
@@ -192,9 +196,6 @@ export default {
         })
       return travelRequests
     },
-  },
-  mounted() {
-    this.admin = Vue.filter("isAdmin")()
   },
   methods: {
     isNil,
@@ -228,34 +229,27 @@ export default {
       })
     },
     exportToExcel() {
-      // console.log(this.selectedRequests)
+      // The object keys must match the headers option.
+      // In future versions of the library, the headers can be customized independently.
       const csvInfo = this.selectedRequests.map((req) => {
         return {
-          profiles: req.profiles
-            ?.map((profile) => profile.profileName.replace(".", " "))
-            ?.join(", "),
-          department: req.department,
-          branch: req.branch ? req.branch : "",
-          travelDate: req.isOpenForAnyDate ? req.month : req.startDate + " " + req.endDate,
-          location: req.location,
-          purpose: req.purpose ? req.purpose : "",
-          estimatedCost: req.estimatedCost,
-          reason: req.reason ? req.reason : "",
-          status: req.status ? req.status : "",
-          travelerNotes: req.travelerNotes ? req.travelerNotes : "",
+          Name: req.profiles?.map((profile) => profile.profileName.replace(".", " "))?.join(", "),
+          Department: req.department,
+          Branch: req.branch ? req.branch : "",
+          "Travel Date": req.isOpenForAnyDate ? req.month : req.startDate + " " + req.endDate,
+          Location: req.location,
+          Purpose: req.purpose ? req.purpose : "",
+          "Estimated Cost": req.estimatedCost,
+          Reason: req.reason ? req.reason : "",
+          Status: req.status ? req.status : "",
+          Notes: req.travelerNotes ? req.travelerNotes : "",
         }
       })
+      const currentDate = DateTime.now().toFormat("yyyy-MM-dd")
       const options = {
-        fieldSeparator: ",",
-        quoteStrings: '"',
-        decimalSeparator: ".",
+        filename: `Travel Requests, Pre-Approved, ${currentDate}`,
+        decimalSeparator: "locale",
         showLabels: true,
-        showTitle: false,
-        title: "",
-        filename: "Preapproved-Travel-Requests",
-        useTextFile: false,
-        useBom: true,
-        useKeysAsHeaders: false,
         headers: [
           "Name",
           "Department",

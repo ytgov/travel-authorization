@@ -1,6 +1,13 @@
 import { isEmpty, isNil, last, first, pick } from "lodash"
 
-import { Expense, Stop, TravelAuthorization, TravelDeskTravelRequest, TravelSegment, User } from "@/models"
+import {
+  Expense,
+  Stop,
+  TravelAuthorization,
+  TravelDeskTravelRequest,
+  TravelSegment,
+  User,
+} from "@/models"
 
 import BaseSerializer from "./base-serializer"
 import StopsSerializer, { StopDetailedView } from "./stops-serializer"
@@ -97,9 +104,13 @@ export class TravelAuthorizationsSerializer extends BaseSerializer<TravelAuthori
   determineAction() {
     if (this.isDraft()) {
       return ["delete"]
-    } else if (this.isApproved() && this.anyTransportTypeIsAircraft()) {
+    } else if (
+      this.isApproved() &&
+      this.anyTransportTypeIsAircraft() &&
+      !this.travelDeskRequestIsSubmitted()
+    ) {
       return ["submit_travel_desk_request"]
-    } else if (this.isApproved () && this.travellingComplete()) {
+    } else if (this.isApproved() && this.travellingComplete()) {
       return ["submit_expense_claim"]
     } else if (this.travelDeskRequestIsComplete()) {
       return ["view_itinerary"]
@@ -201,6 +212,12 @@ export class TravelAuthorizationsSerializer extends BaseSerializer<TravelAuthori
 
   anyTransportTypeIsPoolVehicle() {
     return this.record.stops?.some((stop) => stop.transport === Stop.TravelMethods.POOL_VEHICLE)
+  }
+
+  travelDeskRequestIsSubmitted() {
+    return (
+      this.record.travelDeskTravelRequest?.status === TravelDeskTravelRequest.Statuses.SUBMITTED
+    )
   }
 
   travelDeskRequestIsComplete() {

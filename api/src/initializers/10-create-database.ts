@@ -25,7 +25,7 @@ async function createDatabase(): Promise<void> {
 
   logger.info(`Database ${DB_NAME} does not exist: creating...`)
   return db.raw(`CREATE DATABASE ${DB_NAME}`).catch((error) => {
-    logger.error("Failed to create database:", error)
+    logger.error(`Failed to create database: ${error}`, { error })
   })
 }
 

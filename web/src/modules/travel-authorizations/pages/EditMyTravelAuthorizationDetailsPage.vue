@@ -38,8 +38,6 @@
 </template>
 
 <script>
-import store from "@/store"
-
 import PurposeFormCard from "@/modules/travel-authorizations/components/edit-my-travel-authorization-details-page/PurposeFormCard"
 import DetailsFormCard from "@/modules/travel-authorizations/components/edit-my-travel-authorization-details-page/DetailsFormCard"
 import ApprovalsFormCard from "@/modules/travel-authorizations/components/edit-my-travel-authorization-details-page/ApprovalsFormCard"
@@ -53,25 +51,6 @@ export default {
     DetailsFormCard,
     ApprovalsFormCard,
     SaveDraftButton,
-  },
-  // CONSIDER: Should I just put this in the mounted hook?
-  // Or if if I should controll this problem by never showing the edit link to a user if they can't edit?
-  async beforeRouteEnter(to, _from, next) {
-    if (to.name !== "EditMyTravelAuthorizationDetailsPage") {
-      return next()
-    }
-
-    await store.dispatch("current/user/ensure")
-    await store.dispatch("travelAuthorization/ensure", to.params.travelAuthorizationId)
-
-    if (store.getters["travelAuthorization/isEditable"]) {
-      return next()
-    }
-
-    next({
-      name: "ReadMyTravelAuthorizationDetailsPage",
-      params: { travelAuthorizationId: store.getters["travelAuthorization/id"] },
-    })
   },
   props: {
     travelAuthorizationId: {

@@ -95,7 +95,9 @@ export class TravelAuthorizationsController extends BaseController {
       const serializedTravelAuthorization =
         TravelAuthorizationsSerializer.asDetailed(travelAuthorization)
 
-      return this.response.status(200).json({ travelAuthorization: serializedTravelAuthorization })
+      return this.response
+        .status(200)
+        .json({ travelAuthorization: serializedTravelAuthorization, policy })
     } catch (error) {
       return this.response
         .status(500)

@@ -4,7 +4,7 @@ import path from "path"
 import helmet from "helmet"
 import fileUpload from "express-fileupload"
 
-import { FRONTEND_URL, NODE_ENV } from "@/config"
+import { DB_HOST, DB_NAME, DB_USER, FRONTEND_URL, NODE_ENV } from "@/config"
 import { requestLoggerMiddleware } from "@/middleware"
 import logger from "@/utils/logger"
 import router from "@/routes"
@@ -51,10 +51,10 @@ app.use(
 app.use(fileUpload())
 
 if (NODE_ENV !== "test") {
-  logger.info("host: ", process.env.DB_HOST)
-  logger.info("user: ", process.env.DB_USER)
-  logger.info("psss: ", "*********")
-  logger.info("db name: ", process.env.DB_NAME)
+  logger.info(`host: ${DB_HOST}`)
+  logger.info(`user: ${DB_USER}`)
+  logger.info("psss: *********")
+  logger.info(`db name: ${DB_NAME}`)
 }
 
 app.use(router)

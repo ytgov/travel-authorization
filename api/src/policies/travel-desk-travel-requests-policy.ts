@@ -16,7 +16,8 @@ export class TravelDeskTravelRequestsPolicy extends BasePolicy<TravelDeskTravelR
     if (this.travelAuthorization.supervisorEmail === this.user.email) return true
     if (
       this.travelAuthorization.userId === this.user.id &&
-      this.travelAuthorization.status === TravelAuthorization.Statuses.APPROVED
+      this.travelAuthorization.status === TravelAuthorization.Statuses.APPROVED &&
+      this.record.status === TravelDeskTravelRequest.Statuses.DRAFT
     ) {
       return true
     }

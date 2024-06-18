@@ -24,7 +24,6 @@
 import { mapActions, mapGetters } from "vuex"
 
 import { TYPES } from "@/api/expenses-api"
-import store from "@/store"
 
 import EstimateCreateDialog from "@/modules/travel-authorizations/components/edit-my-travel-authorization-estimate-page/EstimateCreateDialog"
 import EstimateGenerateDialog from "@/modules/travel-authorizations/components/edit-my-travel-authorization-estimate-page/EstimateGenerateDialog"
@@ -36,25 +35,6 @@ export default {
     EstimateCreateDialog,
     EstimateGenerateDialog,
     EstimatesTable,
-  },
-  // CONSIDER: Should I just put this in the mounted hook?
-  // Or if if I should controll this problem by never showing the edit link to a user if they can't edit?
-  async beforeRouteEnter(to, _from, next) {
-    if (to.name !== "EditMyTravelAuthorizationEstimatePage") {
-      return next()
-    }
-
-    await store.dispatch("current/user/ensure")
-    await store.dispatch("travelAuthorization/ensure", to.params.travelAuthorizationId)
-
-    if (store.getters["travelAuthorization/isEditable"]) {
-      return next()
-    }
-
-    next({
-      name: "ReadMyTravelAuthorizationEstimatePage",
-      params: { travelAuthorizationId: store.getters["travelAuthorization/id"] },
-    })
   },
   props: {
     travelAuthorizationId: {
